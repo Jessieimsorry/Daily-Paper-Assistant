@@ -1,0 +1,1 @@
+{"name":"daily-paper-assistant","version":"2.0.0","description":"可配置、多语的本地科研文献阅读工作台","license":"MIT","private":true,"engines":{"node":">=22"},"scripts":{"start":"node scripts/launch.js","test":"node test/configurable.js","release":"node scripts/release.js"},"dependencies":{"exceljs":"4.4.0"},"overrides":{"uuid":"11.1.1"}}

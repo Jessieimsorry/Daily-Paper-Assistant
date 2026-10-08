@@ -1,0 +1,385 @@
+{
+  "project": "Daily-Paper-Assistant",
+  "at": "2026-10-08T06:10:29.156Z",
+  "privacy": {
+    "personalData": false,
+    "secrets": false,
+    "privateScreenshots": false,
+    "licensedCatalogs": false,
+    "gitHistory": false
+  },
+  "files": [
+    {
+      "file": "lib/aclbib.js",
+      "sha256": "5cdc5e7aa50aa27428a4383825099a2a59d04592b1b1a44cf91ef283040eb033"
+    },
+    {
+      "file": "lib/api-v2.js",
+      "sha256": "12323141fda00a43c03114da1e12ffbc98a88cb711829c33cb6c4e815f45b341"
+    },
+    {
+      "file": "lib/brief.js",
+      "sha256": "8d24b76dde9055a145e719913ff8f3de8f24c85b5422369719a97012139ce404"
+    },
+    {
+      "file": "lib/catalog-import.js",
+      "sha256": "48ae5417a2410202fa4047fdd6f6846434e97870ce24069548463d3323dae239"
+    },
+    {
+      "file": "lib/categories.js",
+      "sha256": "a137d507e0f2b075de27615e89bc0a2a6b7002d410797ddc2ab82f132974d20e"
+    },
+    {
+      "file": "lib/clock.js",
+      "sha256": "c7080cdb5656b1d077235345a5852abba08af7b9a3e048ee270720f885341998"
+    },
+    {
+      "file": "lib/cnimport.js",
+      "sha256": "3fb1498adc35f978eb31190de9ab4abaee6d4fbfb7d12e213a8d41e362a5008c"
+    },
+    {
+      "file": "lib/cnsource.js",
+      "sha256": "75f058bf71a4b3902adf6c382a8bf330d59014dae61e80357370cc915c4c63e4"
+    },
+    {
+      "file": "lib/config.js",
+      "sha256": "618e0bc05fa54dce206a6d4dd37bc27e8401001774ea13a79f086eb988ed7078"
+    },
+    {
+      "file": "lib/customize.js",
+      "sha256": "d7118c34333949fce9b5d8dd28f620fb384ac247d6af80f299b696b4ca0200c1"
+    },
+    {
+      "file": "lib/desk.js",
+      "sha256": "ec5f24db979f47b05b7fa6ec58e502d30716435070dd0baf0665cc7d2a9453d3"
+    },
+    {
+      "file": "lib/discover.js",
+      "sha256": "43633b3744f268eef38bdc13e2322615ed93b4624d5b7c90eeea8867c78c2205"
+    },
+    {
+      "file": "lib/frontier.js",
+      "sha256": "039b4b8018d7d7e49fb3c033adb8402043e5fa794a166a4a8f35efbf52e29431"
+    },
+    {
+      "file": "lib/fulltext.js",
+      "sha256": "fc295f17bfda8eae789688a99a2b0b5fdb047ed3e2ba9033a4272df675dee40e"
+    },
+    {
+      "file": "lib/http.js",
+      "sha256": "039edf39bd41767f409e9a0094fb76629f221f8d3a6ac29dd365fc74fcb814b9"
+    },
+    {
+      "file": "lib/interpret.js",
+      "sha256": "6ae1c917640ef29b30c67c30aade8dac593ea9ccaba8725d4f3d65f64ae26aab"
+    },
+    {
+      "file": "lib/journals.js",
+      "sha256": "fe4047afaa9339cb9d2e9f0e5e605902affe4693f5861cb10efcf2a5f546c55e"
+    },
+    {
+      "file": "lib/judgments.js",
+      "sha256": "7824df4f1b3e5d8859cb46dabf6bb0047853f7ac73855f45c25c81c301e3c8ed"
+    },
+    {
+      "file": "lib/langfix.js",
+      "sha256": "0c226fc67a2c409a504ab5a043e8f2b39d51927d6a77c02c44e65baebbc6a0d6"
+    },
+    {
+      "file": "lib/library.js",
+      "sha256": "fd12e58981d2e92bcb65f4cafd7318947d086adc5cc2e02b463c5448e5efb475"
+    },
+    {
+      "file": "lib/materials.js",
+      "sha256": "065cb3e4a758f5affdb7d154754ba9a202d6b0b729b997d309a97bb811bd0916"
+    },
+    {
+      "file": "lib/migration-pack.js",
+      "sha256": "8ca9627e14c185eac9f5617f3d86485e8f6f08a942917db649dc1d48fa1a6e8a"
+    },
+    {
+      "file": "lib/models.js",
+      "sha256": "d2420b63bd65880260026bb9a73a05824a01055e59d99b253922ffffdc7aaee4"
+    },
+    {
+      "file": "lib/multilingual.js",
+      "sha256": "0a68dd5a7942d62b544e947e1ad963cafedff083301aa3cf8cbdeef273542f9e"
+    },
+    {
+      "file": "lib/normalize.js",
+      "sha256": "f7fc7f47b2eef6048bbdca5457a90f1add4d7ff6b267d09a9a22455abc2a4c97"
+    },
+    {
+      "file": "lib/pdftext.js",
+      "sha256": "81dd0d32d63ba169dad65caa7de493f53ccd4eee0f248ef94103e5e72525ba14"
+    },
+    {
+      "file": "lib/platform.js",
+      "sha256": "07efa88c889c641945f2e46bf695a0ea7b58d837e472f38310fc5377010fc665"
+    },
+    {
+      "file": "lib/rank.js",
+      "sha256": "154d6aa34f85c13191a95a2a7eb5fa65e1907396f2a32bc71ebe05eaa4dcde3c"
+    },
+    {
+      "file": "lib/reader.js",
+      "sha256": "e74b7dd5a4779838d86f209d137bc01b6663c85e373e9f89bf7770458208ff3c"
+    },
+    {
+      "file": "lib/scheduler.js",
+      "sha256": "ed28a16d236ddd52433aac45be9efec72e458c98b0edf20a44d6e91cb611e92d"
+    },
+    {
+      "file": "lib/science.js",
+      "sha256": "65a5d33f70ec12c861ccab4b782f583bf9ff2829def4c4651e11f5949d79d885"
+    },
+    {
+      "file": "lib/sources.js",
+      "sha256": "a08c3abfc33ec3c6daff5443eecb5365d1c31bdebb33a9145f049aaf9fe74fec"
+    },
+    {
+      "file": "lib/store.js",
+      "sha256": "9a6ef921c1c2a7e5015211acc235f00c77e9c4ea8deed3299d19d9640e2d7f42"
+    },
+    {
+      "file": "lib/tasks.js",
+      "sha256": "96d821cf4e3616ec74265e01dfe208a10e833c688908670ef8852ab42ad051ac"
+    },
+    {
+      "file": "lib/time.js",
+      "sha256": "4c09f8b2c780c78321f9de18cbfeb57dcaa7916c99ee0c671c014f4ffc6eda50"
+    },
+    {
+      "file": "lib/translate.js",
+      "sha256": "2abdffc7f2cc3331a763a9c35af13ba0941a9f351710981b36288759b22b831a"
+    },
+    {
+      "file": "public/app.js",
+      "sha256": "4a9006968a5bdb42c226876b8010dba229cb32c587ac8f296d4e8de0d7641451"
+    },
+    {
+      "file": "public/customize.js",
+      "sha256": "f80dadabc1e465ee7f5c1fdf9b8bbd272943b7ead2b3ecbaa447a63c30b7fd2f"
+    },
+    {
+      "file": "public/index.html",
+      "sha256": "27d637e019d60da643b6e56b2aca10975902112d78731f160f9b92bfd5597c71"
+    },
+    {
+      "file": "public/reader.js",
+      "sha256": "73b12c1ef37ad7de7cdea80e7ebb26a1ff24691f7504708ec99b5173df5e8089"
+    },
+    {
+      "file": "public/style.css",
+      "sha256": "31cd991b23cf176030ca720b88d21f87df4e34e74b52ca8c63a9f0458da0806f"
+    },
+    {
+      "file": "scripts/launch.js",
+      "sha256": "16db0fae11cd586abc991d17af0e382902d11428b207496eec650683ef6cd276"
+    },
+    {
+      "file": "scripts/release.js",
+      "sha256": "5236e746681ed3e815c3f73e9a7190a8087e607ad4e1ed62375c4a05343396e5"
+    },
+    {
+      "file": "scripts/sync-runtime.js",
+      "sha256": "ccef46cbdbe6e533ae6c98c3bb50318c2e0f22729ed8fd03bdd84fbc9ee87e03"
+    },
+    {
+      "file": "test/acl-bib-sync.js",
+      "sha256": "173571886d9f5dada06e22c41c95a49513aaf8a0b44c2a77c07240ae9a49642b"
+    },
+    {
+      "file": "test/ai-mock.js",
+      "sha256": "151ed955943267ebc12d312c0dab9c2a6c99d5d2cf3e434ea638ec545d45e57c"
+    },
+    {
+      "file": "test/brief-and-domain.js",
+      "sha256": "9a9631697b8b56c44cb3c6c667703ae737f1c4a078759b549c8b6ea37f19f38b"
+    },
+    {
+      "file": "test/card-reading-hierarchy.js",
+      "sha256": "4aea127e2d8c682274cb2760e92ad05de7d0d34aa6b6b98950043798a8c962b5"
+    },
+    {
+      "file": "test/cn-catalog-source.js",
+      "sha256": "ecb27e06bd67745a66cbd4c9fc49cbf7b17af17ab0e45552ba8d521d2ca66716"
+    },
+    {
+      "file": "test/collapse-a11y.js",
+      "sha256": "86919178f31a8e0673aa07aab6b13ed1b97e9ae0acffeb6a6c105e9cd6d711f6"
+    },
+    {
+      "file": "test/configurable.js",
+      "sha256": "8bfbecca1a68c176b55e351ea187c6b54da268feb0140ee8a5ee47cd1a157b1d"
+    },
+    {
+      "file": "test/data-quality-after-scheduled-run.js",
+      "sha256": "8f5cc7e51b344ceac26d5cf75545e31987912bc76690f92299f77c8eaee19a08"
+    },
+    {
+      "file": "test/default-scope-zh-en.js",
+      "sha256": "58295e73993b8a2fb7173c5bb2729f83efd60273df3ef3d4a085690e7b19c25e"
+    },
+    {
+      "file": "test/desk-judgment-evidence.js",
+      "sha256": "812a2fbb4fef93854ae1e32609a7d942bbde33c1b7eafc97f6e2e679d96cda7d"
+    },
+    {
+      "file": "test/frontier-sources.js",
+      "sha256": "9f070fcc8bdc0dd0e561bd6dbcebbef086143f6dea506b6c66ceeb08db24fa32"
+    },
+    {
+      "file": "test/interp-history-sync.js",
+      "sha256": "09440810791c98da96414199c2d0aa55bf9d3ff8c18f0578008f3aac855fcd47"
+    },
+    {
+      "file": "test/language-detection.js",
+      "sha256": "9414c2539f61f756fcb19a230201238433c9ec9779c2b20982ff31e7a8f906fa"
+    },
+    {
+      "file": "test/launch-smoke.js",
+      "sha256": "3c83498dfe14f3030bf54185c2072725f4df9127e31832bcb0e9a2c89c428dc0"
+    },
+    {
+      "file": "test/reader-improvements.js",
+      "sha256": "8a574098c02e6fe19e13f4d152b729cbbcce70264e89c3b3bc523c2b9dc49fa0"
+    },
+    {
+      "file": "test/reading-speed.js",
+      "sha256": "f6486aaf3a0ceafabb882d64ac3931eda7f2dbb6e8a1bafd659f514fc7330dbb"
+    },
+    {
+      "file": "test/reading-wording-placeholders.js",
+      "sha256": "5bf0d1d86e977e2e4c4eafb6584f8ce26b28118d397bc9cc8e399f887d33d03e"
+    },
+    {
+      "file": "test/recommendation-eligibility-wording.js",
+      "sha256": "3d26905590fdf09e8cb9ba274b1cf1f5be6f8923685dd6fa6440d3e876eae3a0"
+    },
+    {
+      "file": "test/reference-precedence.js",
+      "sha256": "e5370328d886a15e15034397dd88c7fc9e2ab5165becb2778fb53586e374e38b"
+    },
+    {
+      "file": "test/scheduler-and-crossdomain.js",
+      "sha256": "ac48319cdf79a95381e511a07a78b53ce3e31269f28939e51495d54f9c3f0fa3"
+    },
+    {
+      "file": "test/time-consistency.js",
+      "sha256": "4d2b952eb833c78d4aa2434b0ac4926961ed16b6da4990093ef625621823eb9f"
+    },
+    {
+      "file": "test/topic-evidence.js",
+      "sha256": "6c0daa7d398885658d777cd4554c1bfdf515f88b4d93c4d6b64ecb961aede039"
+    },
+    {
+      "file": "test/translate-cnimport.js",
+      "sha256": "82b5d9b75bd445cb53122830f39a693a898d6a241cdbe64f831506e5a487ff9d"
+    },
+    {
+      "file": "test/verify.js",
+      "sha256": "e3eb330925b1f3481290539a5ff72c43b2f313c88d72510597d6798ce383ff0b"
+    },
+    {
+      "file": "catalogs/templates/blacklist.csv",
+      "sha256": "8e500ad8286e4337d2cfa9044acfe5d19d37789a9b297514bd9ab9afb0ff2a19"
+    },
+    {
+      "file": "catalogs/templates/cas.csv",
+      "sha256": "3f21a0e6c32f46598fff39387088df79775ff2f58be2cd0b4af591d3071be231"
+    },
+    {
+      "file": "catalogs/templates/cn_core.csv",
+      "sha256": "9afe38769f89a20a5ec624f29330efc3b83e3c16dd1a705a21f4260cd292b2d3"
+    },
+    {
+      "file": "catalogs/templates/cssci.csv",
+      "sha256": "cdd6d9540e1ab03e915b3572327b9abb61a741516c1ecb9e670222777d93996f"
+    },
+    {
+      "file": "catalogs/templates/cssci_ext.csv",
+      "sha256": "118f9944b11f9c8cac891c273fef1a83d5ddaf338589a18db5618fb7933a137b"
+    },
+    {
+      "file": "catalogs/templates/ssci_jcr.csv",
+      "sha256": "9d3e5f1ba89dfd9b99cb4a5062516a7f73d76933cc479724dbc0897f216450c0"
+    },
+    {
+      "file": "catalogs/templates/whitelist.csv",
+      "sha256": "46ff69013638a302bfd990020bbefa0e90c3a82af19d83a3dec643a4c3b2139e"
+    },
+    {
+      "file": ".github/workflows/test.yml",
+      "sha256": "eb30c07049b8493fae92429b6ed954345dd5f7afb4cdfb3e53d7c5a32db68952"
+    },
+    {
+      "file": "docs/images/home.jpg",
+      "sha256": "5ef66a5f80500555445f4efd34c65b917c0e662ecc7c5b439bc769d7b4bf277a"
+    },
+    {
+      "file": "server.js",
+      "sha256": "e33b5737eb5b2b92c8ed5c8262c90bc08a4db2d3b5745867d5853f76f6eda7f1"
+    },
+    {
+      "file": "package.json",
+      "sha256": "0a4ad1a2c63b968e06c48c46da8ad741c83748eda04fb14b77ac4107f92f6b38"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "072d139219ca9ef3f4f65bedfc6374752adb44f617fc09bfd0bb87995ab8fd6f"
+    },
+    {
+      "file": "start.sh",
+      "sha256": "42c77f04a6e946b29dae86c7925a6d8c0477347c593d0c673af3dc7be72f0bd1"
+    },
+    {
+      "file": "启动工作台.command",
+      "sha256": "630b0a70fda9e3bb944c66919b552de7c8b3bacb9568f68293da9d74a3175158"
+    },
+    {
+      "file": "启动工作台.cmd",
+      "sha256": "98d246396d94aa5a66cd5ca25c00eb401116b294fbdfe69368f1cc6babc36144"
+    },
+    {
+      "file": "README.md",
+      "sha256": "eaa433faba2c7472c2784d1eb38b3945bf51e785f4e50811d6c4996aedb3ab97"
+    },
+    {
+      "file": "LICENSE",
+      "sha256": "b9140601e93767bad3d25c0f1dc3060fd7247673cd854f28a935c370c05a8a36"
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "sha256": "e27cac002d5c807d47a57612b088510aa794c81b52d45730a34f408bf62ddb82"
+    },
+    {
+      "file": ".gitignore",
+      "sha256": "54db66fa80a9acc0b652f290b961cdaba409bc4c09b17a50060f2dfb63aa65b1"
+    },
+    {
+      "file": ".env.example",
+      "sha256": "f3c92bdb07dff0965f5c24b8733762c60d3b99720be41720e196cb917d767ba0"
+    },
+    {
+      "file": "catalogs/seed-topics.json",
+      "sha256": "87297f6cec7ff24995ab5abaa8debb15b0effd73d1f4050fb419ca9a3d604e40"
+    },
+    {
+      "file": "docs/隐私与发布说明.md",
+      "sha256": "619069718326376346898e00206d45e6c56fd3ac0aee099ce99618e4aab5446e"
+    },
+    {
+      "file": "docs/第三方依赖.md",
+      "sha256": "cda8ace686bc0beb4d56b2c65262bfc775cff3dd2be4cd1dd329332713a14813"
+    },
+    {
+      "file": "docs/验证记录.md",
+      "sha256": "bf5ab29b31214d8b6be590f26eaf69d07a12dcb3580750dbc8da81e2023679f2"
+    },
+    {
+      "file": "catalogs/seed-reference-journals.json",
+      "sha256": "2d123faf374c54a0f810e2fc489ea297e33276d39b96503468769cae71a18795"
+    }
+  ]
+}

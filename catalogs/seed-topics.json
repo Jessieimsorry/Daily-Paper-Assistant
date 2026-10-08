@@ -1,0 +1,119 @@
+{
+  "版本": "seed-2026-09",
+  "说明": "五个较宽的主题及其中英文检索词。你可以在界面里增删主题、修改关键词。keywords_zh 用于发现中文论文，keywords_en 用于发现英文论文；每条检索式会被分别送到 Crossref 与 OpenAlex。",
+  "topics": [
+    {
+      "slug": "linguistics",
+      "name_zh": "语言学与应用语言学（语言教育方向）",
+      "name_en": "Linguistics and Applied Linguistics (language education)",
+      "keywords_zh": [
+        "应用语言学 语言教育",
+        "外语教学 二语",
+        "语言教师 专业发展",
+        "语言政策 语言规划 教育",
+        "课程改革 外语教学",
+        "教材研究 语言教学",
+        "语言测试 评价 教学"
+      ],
+      "keywords_en": [
+        "applied linguistics language education",
+        "language teacher professional development",
+        "language policy planning education",
+        "second language pedagogy curriculum",
+        "language assessment testing classroom",
+        "teaching materials textbook language",
+        "classroom discourse language teaching"
+      ]
+    },
+    {
+      "slug": "sla",
+      "name_zh": "第二语言习得",
+      "name_en": "Second Language Acquisition",
+      "keywords_zh": [
+        "第二语言习得",
+        "中介语 发展",
+        "语言迁移 母语影响",
+        "学习动机 二语",
+        "工作记忆 语言学习",
+        "纠正性反馈 习得",
+        "语言水平 个体差异"
+      ],
+      "keywords_en": [
+        "second language acquisition",
+        "interlanguage development",
+        "crosslinguistic influence transfer second language",
+        "L2 motivation self",
+        "working memory second language",
+        "corrective feedback second language acquisition",
+        "individual differences language aptitude"
+      ]
+    },
+    {
+      "slug": "pragmatics",
+      "name_zh": "语用研究",
+      "name_en": "Pragmatics",
+      "keywords_zh": [
+        "语用能力 二语",
+        "礼貌 言语行为",
+        "会话分析 互动",
+        "语用标记 汉语",
+        "请求 道歉 汉语学习者",
+        "课堂语用 教学"
+      ],
+      "keywords_en": [
+        "pragmatic competence second language",
+        "speech acts politeness",
+        "conversation analysis interactional competence",
+        "pragmatic markers discourse",
+        "request apology interlanguage pragmatics",
+        "teaching pragmatics instruction"
+      ]
+    },
+    {
+      "slug": "edtech",
+      "name_zh": "教育技术研究",
+      "name_en": "Educational Technology",
+      "keywords_zh": [
+        "人工智能 语言教学",
+        "技术赋能 语言学习",
+        "在线学习 语言",
+        "移动学习 汉语",
+        "学习者 技术接受 语言",
+        "生成式人工智能 教育",
+        "人机协同 教学"
+      ],
+      "keywords_en": [
+        "artificial intelligence language learning",
+        "generative AI language teaching",
+        "technology enhanced language learning",
+        "mobile assisted language learning",
+        "online learning language education",
+        "human-AI collaboration learning",
+        "chatbot intelligent tutoring language"
+      ]
+    },
+    {
+      "slug": "chinese",
+      "name_zh": "汉语语言学研究",
+      "name_en": "Chinese Linguistics",
+      "keywords_zh": [
+        "现代汉语 语法",
+        "汉语 句法 语义",
+        "汉语 语音 音系",
+        "汉语 词汇 语料库",
+        "汉语 方言 变异",
+        "汉字 习得 阅读",
+        "国际中文教育 汉语教学"
+      ],
+      "keywords_en": [
+        "Chinese linguistics syntax",
+        "Mandarin Chinese grammar semantics",
+        "Chinese phonology phonetics",
+        "Chinese corpus lexical",
+        "Chinese character reading acquisition",
+        "Chinese as a second foreign language teaching",
+        "Mandarin dialect variation"
+      ]
+    }
+  ]
+}

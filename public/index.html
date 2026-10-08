@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>科研文献阅读工作台</title>
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>📚</text></svg>">
+</head>
+<body>
+<button id="drawerToggle" class="drawer-toggle" aria-controls="readerSidebar" onclick="setReaderPref('collapsed',!readerUI.prefs.collapsed)"></button>
+<div class="drawer-backdrop" onclick="setReaderPref('collapsed',true)"></div>
+<div id="app">
+  <aside class="sidebar" id="readerSidebar">
+    <div class="brand">
+      <div class="brand-title">科研文献阅读工作台</div>
+      <div class="brand-sub"></div>
+    </div>
+    <nav class="nav" id="nav">
+      <button class="nav-item" data-view="discovery">今日发现</button>
+      <button class="nav-item" data-view="qualified">期刊条件合格精选</button>
+      <button class="nav-item" data-view="judgments">阅读判断</button>
+      <button class="nav-item" data-view="brief">AI 简报</button>
+      <button class="nav-item" data-view="library">我的收藏</button>
+      <button class="nav-item" data-view="topics">主题与检索词</button>
+      <button class="nav-item" data-view="journals">期刊目录与核验</button>
+      <button class="nav-item" data-view="search">库内检索 / 添加论文</button>
+      <button class="nav-item" data-view="personalize">个性化与栏目</button>
+      <button class="nav-item" data-view="models">模型与智能体</button>
+      <button class="nav-item" data-view="tasks">任务与数据</button>
+      <button class="nav-item" data-view="settings">设置与数据源</button>
+    </nav>
+    <div id="readerToolbar" class="reader-toolbar" aria-label="阅读显示设置"></div>
+    <div class="sidebar-foot" id="sidebarFoot">
+      <div class="muted small" id="footStats">加载中…</div>
+    </div>
+  </aside>
+
+  <div class="workspace">
+  <main class="main" id="main">
+    <div class="loading">正在加载…</div>
+  </main>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="modal" class="modal-backdrop hidden"><div class="modal" id="modalBox"></div></div>
+
+<script src="/reader.js"></script>
+<script src="/customize.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
