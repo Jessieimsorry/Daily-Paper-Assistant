@@ -84,9 +84,11 @@ async function installReader() {
   goPaper = id => { saveReaderList(); return goToPaper(id); };
   const paper=viewPaper;
   viewPaper = async function(id,opts) {
+    const requestedRoute = location.hash;
     const saved=readerUI.lastList;
     readerUI.restore=Boolean(saved);
     await paper(id,opts);
+    if (location.hash !== requestedRoute) return;
     if (state.currentPaper?.id!==id) return;
     // 只记继续阅读位置；打开详情不自动标记浏览、在读或已读。
     const r=await api('/api/reader/resume',{method:'POST',body:{id}});

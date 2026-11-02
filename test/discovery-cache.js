@@ -1,0 +1,33 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+const dir=fs.mkdtempSync(path.join(os.tmpdir(),'dpa-discovery-cache-'));
+process.env.LITDESK_DATA_DIR=dir;
+const store=require('../lib/store');store.migrate();
+require('../lib/discover').seedTopicsIfEmpty();require('../lib/categories').seed();
+const desk=require('../lib/desk'),rank=require('../lib/rank');
+const today=new Date().toISOString().slice(0,10), count=12005;
+const insert=store.db.prepare('INSERT INTO papers(title,abstract,language,dedup_key,discovery_date,issued_date) VALUES(?,?,?,?,?,?)');
+store.db.exec('BEGIN');
+for(let i=0;i<count;i++)insert.run('Second language acquisition study '+i,'Students learning a second language in classroom instruction.','en','cache-'+i,today,today);
+store.db.exec('COMMIT');
+let scores=0;const score=rank.scorePaper;
+rank.scorePaper=(...args)=>{scores++;return score(...args);};
+(async () => { try {
+  let responsive=false;
+  setImmediate(() => { responsive=true; });
+  const first=await (desk.listDiscoveryAsync || desk.listDiscovery)({pageSize:1});
+  assert.equal(responsive,true,'cold discovery must yield so navigation and translation responses can proceed');
+  assert.equal(first.total,count);assert.equal(scores,count);
+  scores=0;
+  const again=desk.listDiscovery({pageSize:1});
+  assert.equal(again.total,count);
+  assert.equal(scores,0,'a candidate window larger than 12,000 must not evict itself on every scan');
+  store.run("UPDATE papers SET abstract='Second language acquisition and corrective feedback.' WHERE id=1");
+  scores=0;desk.listDiscovery({pageSize:1});
+  assert.equal(scores,1,'editing one paper invalidates that paper');
+  require('../lib/library').toggleStar(again.items[0].id,true);
+  const current=desk.listDiscovery({pageSize:1});
+  assert.equal(current.items[0].starred,true,'cached scoring never freezes reading state');
+  console.log('4 discovery cache checks passed');
+} finally {rank.scorePaper=score;store.db.close();fs.rmSync(dir,{recursive:true,force:true});}
+})().catch(e=>{console.error(e);process.exitCode=1;});

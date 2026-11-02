@@ -120,13 +120,16 @@ async function installV2() {
     await oldDiscovery(...args);
     if (state.view === "discovery") {
       const main = $("#main");
-      main.innerHTML = `<div class="dpa-region-tabs"><button class="btn" onclick="dpaHome('research')">研究文献</button><button class="btn" onclick="dpaHome('frontier')">技术前沿</button><button class="btn" onclick="dpaHome('science')">科学进展 · Nature / Cell / Science</button><button class="btn" onclick="go('personalize')">选择栏目</button></div><div id="dpaResearch">${main.innerHTML}</div><div id="dpaStreams" class="hidden"></div>`;
+      if (!main.querySelector('#dpaResearch'))
+        main.innerHTML = `<div class="dpa-region-tabs"><button class="btn" onclick="dpaHome('research')">研究文献</button><button class="btn" onclick="dpaHome('frontier')">技术前沿</button><button class="btn" onclick="dpaHome('science')">科学进展 · Nature / Cell / Science</button><button class="btn" onclick="go('personalize')">选择栏目</button></div><div id="dpaResearch">${main.innerHTML}</div><div id="dpaStreams" class="hidden"></div>`;
       if (dpaRegion !== "research") await dpaHome(dpaRegion);
     }
   };
   const oldPaper = viewPaper;
   viewPaper = async function (id) {
+    const requestedRoute = location.hash;
     await oldPaper(id);
+    if (location.hash !== requestedRoute) return;
     $("#main").insertAdjacentHTML(
       "afterbegin",
       `<div class="dpa-region-tabs"><button class="btn" onclick="dpaSubject('paper:${id}')">多语翻译与智能体</button></div>`,
@@ -136,8 +139,11 @@ async function installV2() {
   runFullUpdate = async () => dpaSearchDialog(dpaRegion);
   const oldLibrary = viewLibrary;
   viewLibrary = async function (...args) {
+    const requestedRoute = location.hash;
     await oldLibrary(...args);
+    if (location.hash !== requestedRoute) return;
     const r = await api("/api/stream-library");
+    if (location.hash !== requestedRoute) return;
     $("#dpaStreamLibrary")?.remove();
     if (r.items?.length) {
       $("#main").insertAdjacentHTML(
@@ -149,7 +155,9 @@ async function installV2() {
   };
   const oldTopics = viewTopics;
   viewTopics = async function () {
+    const requestedRoute = location.hash;
     await oldTopics();
+    if (location.hash !== requestedRoute) return;
     $("#main").insertAdjacentHTML(
       "afterbegin",
       `<p><button class="btn" onclick="go('personalize')">栏目归属、排除词与自动检索设置</button></p>`,
@@ -157,7 +165,9 @@ async function installV2() {
   };
   const oldJournals = viewJournals;
   viewJournals = async function () {
+    const requestedRoute = location.hash;
     await oldJournals();
+    if (location.hash !== requestedRoute) return;
     $("#main").insertAdjacentHTML(
       "afterbegin",
       `<p><button class="btn primary" onclick="go('catalog-import')">导入 CSV / Excel / TSV 与字段预览</button></p>`,
@@ -183,6 +193,7 @@ async function dpaHome(region) {
   if (region === "research") return;
   box.innerHTML = '<p class="muted">读取本地缓存…</p>';
   const r = await api(region === "science" ? "/api/science" : "/api/frontier");
+  if (!box.isConnected || dpaRegion !== region) return;
   if (dpaRegion !== region) return;
   const items = r.items || [],
     label = region === "science" ? "科学进展" : "技术前沿";
@@ -214,16 +225,41 @@ async function dpaLoadStreamTranslation(key) {
       const visible =
         el.getBoundingClientRect().top < innerHeight &&
         el.getBoundingClientRect().bottom > 0;
-      if (visible) dpaTranslate(key, "abstract", true);
+      if (visible && !el.translationPending) {
+        el.translationPending = true;
+        el.textContent = "译文生成中…原文可继续阅读";
+        try {
+          const submitted = await dpaTranslate(key, "abstract", true);
+          if (!submitted?.ok) throw Error(submitted?.error || "翻译任务未能提交");
+        } catch (e) {
+          el.textContent = "翻译任务未能提交，可点击翻译摘要重试";
+          el.translationPending = false;
+          return;
+        }
+        // 模型常超过 2.5 秒；持续读取同一任务的缓存，不重复提交模型请求。
+        const poll = async (attempt = 0) => {
+          if (!el.isConnected) return;
+          try {
+            const fresh = await api("/api/subject/" + key.replace(":", "/"));
+            if (fresh.translations?.abstract?.text) {
+              el.textContent = fresh.translations.abstract.text;
+              el.translationPending = false;
+              return;
+            }
+            if (attempt < 79) {
+              setTimeout(() => poll(attempt + 1), 2500);
+              return;
+            }
+            el.textContent = "译文尚未完成，请在任务与数据中查看进度或重试";
+          } catch (e) {
+            el.textContent = "暂时无法读取译文，可在任务与数据中查看结果";
+          }
+          el.translationPending = false;
+        };
+        setTimeout(() => poll(), 2500);
+      }
     }
     dpaAutoAgents(key);
-    if (!r.translations.abstract.text && r.subject.abstract)
-      setTimeout(async () => {
-        if (!el.isConnected) return;
-        const fresh = await api("/api/subject/" + key.replace(":", "/"));
-        if (fresh.translations?.abstract?.text)
-          el.textContent = fresh.translations.abstract.text;
-      }, 2500);
   }
 }
 async function dpaStar(key) {
@@ -301,7 +337,9 @@ async function dpaConfirmSearch() {
   go("tasks");
 }
 async function viewPersonalize() {
+  const requestedRoute = location.hash;
   await dpaReload();
+  if (location.hash !== requestedRoute) return;
   const p = readerUI.prefs;
   $("#main").innerHTML =
     `<h1>个性化与栏目</h1><div class="card"><h2>工作台名称</h2>${dpaInput("identityName", "名称", dpa.identity.name)}${dpaInput("identitySub", "副标题", dpa.identity.subtitle)}<button class="btn primary" onclick="dpaSaveIdentity()">保存名称</button></div><div class="card"><h2>栏目与自动检索</h2><p>首页显示和每日检索分别设置；主题停用后不参与自动检索。</p><div class="dpa-category-list">${dpa.categories.map((c, i) => `<div class="dpa-category"><input aria-label="栏目名称" id="cat-name-${i}" value="${attr(c.name)}"><label><input id="cat-visible-${i}" type="checkbox" ${c.visible ? "checked" : ""}>首页显示</label><label><input id="cat-auto-${i}" type="checkbox" ${c.automatic ? "checked" : ""}>每日检索</label><details><summary>关联研究方向（${c.topics.length}）</summary>${dpa.topics.map((t) => `<label class="dpa-check"><input type="checkbox" name="cat-topic-${i}" value="${attr(t.slug)}" ${c.topics.includes(t.slug) ? "checked" : ""}>${esc(t.name_zh)}</label>`).join("")}</details><button class="btn small" onclick="dpaRemoveCategory(${i})">移除栏目</button></div>`).join("")}</div><button class="btn" onclick="dpaAddCategory()">新增栏目</button><button class="btn primary" onclick="dpaSaveCategories()">保存栏目</button></div><div class="card"><h2>研究方向</h2><button class="btn" onclick="dpaTopicEditor()">新增研究方向</button>${dpa.topics.map((t) => `<p><button class="btn" onclick="dpaTopicEditor(${t.id})">编辑 ${esc(t.name_zh)}</button> <span class="tiny">${esc(t.slug)} · ${t.enabled ? "已启用" : "已停用"}</span></p>`).join("")}</div><div class="card"><h2>每日更新</h2>${["research", "frontier", "science"].map((k) => `<label class="dpa-check"><input id="auto-${k}" type="checkbox" ${dpa.streams[k] ? "checked" : ""}>${{ research: "研究文献", frontier: "技术前沿", science: "科学进展" }[k]}</label>`).join("")}${dpaInput("researchSize", "研究文献目标篇数", dpa.researchSize, "number")}${dpaInput("frontierSize", "技术前沿篇数", dpa.frontierSize, "number")}${dpaInput("scienceSize", "科学进展篇数", dpa.streams.scienceSize, "number")}<button class="btn primary" onclick="dpaSaveStreams()">保存每日设置</button></div><div class="card"><h2>阅读界面</h2>${dpaSelect("prefWidth", "正文宽度", { full: "铺满", medium: "适中", custom: "自定义" }, p.width || "full")}${dpaInput("prefCustom", "自定义宽度（像素）", p.customWidth || 1280, "number")}${dpaSelect("prefFont", "字体", { system: "系统字体", sans: "中英无衬线", serif: "中英衬线" }, p.fontFamily || "sans")}${dpaSelect("prefEnglish", "英文字体", { system: "系统字体", Arial: "Arial", Georgia: "Georgia", Verdana: "Verdana" }, p.englishFont || "Arial")}${dpaInput("prefLine", "行距", p.line || 1.85, "number")}${dpaInput("prefGap", "段距（像素）", p.gap ?? 12, "number")}${dpaSelect("prefAlign", "对齐", { justify: "两端对齐", left: "左对齐" }, p.align || "justify")}${dpaSelect("prefTheme", "配色", { warm: "暖灰", white: "纸白", green: "浅绿", dark: "深色" }, p.theme || "warm")}${dpaSelect("prefLayout", "原文与译文", { original: "原文在上", translated: "译文在上", parallel: "左右对照" }, p.layout || "original")}<label><input type="checkbox" id="prefMeta" ${p.hideMeta ? "checked" : ""}>隐藏作者与期刊辅助信息</label><p><button class="btn primary" onclick="dpaSaveReading()">应用并保存</button><button class="btn" onclick="dpaResetReading()">恢复阅读默认</button></p>${dpaInput("presetName", "阅读方案名称")}<button class="btn" onclick="dpaSavePreset()">保存方案</button>${Object.keys(
@@ -484,7 +522,9 @@ async function dpaLoadPreset(name) {
   await viewPersonalize();
 }
 async function viewModels() {
+  const requestedRoute = location.hash;
   await dpaReload();
+  if (location.hash !== requestedRoute) return;
   const options = Object.fromEntries(dpa.profiles.map((p) => [p.id, p.name]));
   $("#main").innerHTML =
     `<h1>模型与智能体</h1><div class="card"><h2>模型连接</h2><p>接口需兼容 OpenAI chat/completions；密钥只由本机后端保存。</p>${dpa.profiles.map((p) => `<p><button class="btn" onclick="dpaProfileEditor(${dpaArg(p.id)})">${esc(p.name)} · ${esc(p.model)}</button> ${p.keyConfigured ? "已配置密钥" : "未配置密钥／本地接口"} <button class="btn" onclick="dpaTestProfile(${dpaArg(p.id)})">测试连接</button></p>`).join("")}<button class="btn primary" onclick="dpaProfileEditor()">新增连接</button></div><div class="card"><h2>各功能使用的模型</h2>${Object.entries(
@@ -605,13 +645,17 @@ async function dpaSubject(key) {
   else location.hash = target;
 }
 async function viewSubject(key) {
+  const requestedRoute = location.hash;
   await dpaReload();
+  if (location.hash !== requestedRoute) return;
   const r = await api("/api/subject/" + key.replace(":", "/"));
+  if (location.hash !== requestedRoute) return;
   if (!r.ok) throw Error(r.error);
   const s = r.subject;
   $("#main").innerHTML =
     `<h1>${esc(s.title)}</h1><p class="muted">${esc(s.doi || "无 DOI")} · 原文语言 ${esc(s.language)}</p>${dpaSelect("subjectLanguage", "纠正原文语种", { unknown: "自动识别", ...Object.fromEntries(Object.entries(dpaLanguages).filter(([k]) => k !== "auto")) }, s.language)}<button class="btn" onclick="dpaCorrectLanguage(${dpaArg(key)})">保存原文语种</button><div class="abs-full"><div class="abs-col"><div class="abs-col-label">原文摘要</div><p dir="auto" class="abs-text">${esc(s.abstract || "原始数据未提供摘要")}</p></div><div class="abs-col"><div class="abs-col-label">AI 译文</div><p dir="auto" class="abs-text">${esc(r.translations.abstract.text || "尚未生成")}</p></div></div>${dpaSelect("subjectTarget", "目标语种", dpaLanguages, dpa.translationSettings.target || "auto")}<p>${["title", "keywords", "abstract"].map((f) => `<button class="btn" onclick="dpaTranslate(${dpaArg(key)},'${f}')">翻译${{ title: "标题", keywords: "关键词", abstract: "摘要" }[f]}</button>`).join("")}</p><div class="card"><h2>运行智能体</h2>${dpa.agents.map((a) => `<button class="btn" onclick="dpaRunAgent(${dpaArg(key)},${dpaArg(a.id)})">${esc(a.name)}</button>`).join("")}<h3>顺序流程</h3>${dpa.workflows.map((w) => `<button class="btn" onclick="dpaRunWorkflow(${dpaArg(key)},${dpaArg(w.id)})">${esc(w.name)}</button>`).join("")}</div>${s.paperId ? `<button class="btn" onclick="goPaper(${s.paperId})">返回论文详情</button>` : ""}`;
   const jobs = await api("/api/tasks");
+  if (location.hash !== requestedRoute) return;
   const done = jobs.items.filter(
     (j) => j.snapshot.subjectKey === key && j.steps.length,
   );
@@ -653,12 +697,13 @@ async function dpaTranslate(key, field, quiet = false) {
   });
   if (!r.ok) {
     if (!quiet) toast(r.error, true);
-    return;
+    return r;
   }
   if (!quiet) {
     toast("翻译已排队");
     go("tasks");
   }
+  return r;
 }
 async function dpaRunAgent(key, agentId) {
   await dpaPost("/api/agent-jobs", { subjectKey: key, agentId });
@@ -683,8 +728,11 @@ function dpaAutoAgents(key) {
   }
 }
 async function viewTasks() {
+  const requestedRoute = location.hash;
   await dpaReload();
+  if (location.hash !== requestedRoute) return;
   const r = await api("/api/tasks");
+  if (location.hash !== requestedRoute) return;
   $("#main").innerHTML = `<h1>任务与数据</h1><div class="card"><h2>用量</h2>${
     (dpa.usage || [])
       .slice(0, 7)
@@ -737,7 +785,9 @@ async function dpaTransferCommit() {
   await viewTasks();
 }
 async function viewCatalogImport() {
+  const requestedRoute = location.hash;
   await dpaReload();
+  if (location.hash !== requestedRoute) return;
   $("#main").innerHTML =
     `<h1>期刊目录表格导入</h1><p>支持 CSV、TSV、Excel .xlsx 和粘贴文本。旧版 .xls 请先另存为 .xlsx；不识别 PDF。</p>${dpaSelect(
       "importKind",

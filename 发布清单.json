@@ -1,6 +1,6 @@
 {
   "project": "Daily-Paper-Assistant",
-  "at": "2026-10-08T06:10:29.156Z",
+  "at": "2026-11-02T15:42:54.364Z",
   "privacy": {
     "personalData": false,
     "secrets": false,
@@ -51,7 +51,7 @@
     },
     {
       "file": "lib/desk.js",
-      "sha256": "ec5f24db979f47b05b7fa6ec58e502d30716435070dd0baf0665cc7d2a9453d3"
+      "sha256": "0372f20c84253a278f678bb1273b53687d5f885d1ccd8d1e891f9198886211f8"
     },
     {
       "file": "lib/discover.js",
@@ -103,7 +103,7 @@
     },
     {
       "file": "lib/multilingual.js",
-      "sha256": "0a68dd5a7942d62b544e947e1ad963cafedff083301aa3cf8cbdeef273542f9e"
+      "sha256": "ef817e61a6c71d64134203ce6b6e25b9409ad994e4d0952f144947518e58e06b"
     },
     {
       "file": "lib/normalize.js",
@@ -155,11 +155,11 @@
     },
     {
       "file": "public/app.js",
-      "sha256": "4a9006968a5bdb42c226876b8010dba229cb32c587ac8f296d4e8de0d7641451"
+      "sha256": "960e37bc435b6c309dab1943f19ef610443428069170160db2aef37051cefb6b"
     },
     {
       "file": "public/customize.js",
-      "sha256": "f80dadabc1e465ee7f5c1fdf9b8bbd272943b7ead2b3ecbaa447a63c30b7fd2f"
+      "sha256": "d5be3e41532c74a0466f8762a4fe765743da32891f8d718443ac875fffaab9dc"
     },
     {
       "file": "public/index.html",
@@ -167,7 +167,7 @@
     },
     {
       "file": "public/reader.js",
-      "sha256": "73b12c1ef37ad7de7cdea80e7ebb26a1ff24691f7504708ec99b5173df5e8089"
+      "sha256": "ac2e7a76b5469d772f7ddeb1288d327ffcec54cc35bdbc6df30047d3024ab913"
     },
     {
       "file": "public/style.css",
@@ -226,6 +226,10 @@
       "sha256": "812a2fbb4fef93854ae1e32609a7d942bbde33c1b7eafc97f6e2e679d96cda7d"
     },
     {
+      "file": "test/discovery-cache.js",
+      "sha256": "657cc94d482a613bb98b1a4e835dd136fd9756db5ebf44295fb121dfd5cfdd5a"
+    },
+    {
       "file": "test/frontier-sources.js",
       "sha256": "9f070fcc8bdc0dd0e561bd6dbcebbef086143f6dea506b6c66ceeb08db24fa32"
     },
@@ -240,6 +244,10 @@
     {
       "file": "test/launch-smoke.js",
       "sha256": "3c83498dfe14f3030bf54185c2072725f4df9127e31832bcb0e9a2c89c428dc0"
+    },
+    {
+      "file": "test/navigation-race.js",
+      "sha256": "b4994c3ba746246d0c5cf9b5b76b4e03c4f86991b298e54f9c3a8a04503d02e3"
     },
     {
       "file": "test/reader-improvements.js",
@@ -266,6 +274,10 @@
       "sha256": "ac48319cdf79a95381e511a07a78b53ce3e31269f28939e51495d54f9c3f0fa3"
     },
     {
+      "file": "test/stream-translation-ui.js",
+      "sha256": "6e4d215cb13205d19f1e7ca8c029758b67e49703562fa0d1517b9404c88aff1d"
+    },
+    {
       "file": "test/time-consistency.js",
       "sha256": "4d2b952eb833c78d4aa2434b0ac4926961ed16b6da4990093ef625621823eb9f"
     },
@@ -276,6 +288,14 @@
     {
       "file": "test/translate-cnimport.js",
       "sha256": "82b5d9b75bd445cb53122830f39a693a898d6a241cdbe64f831506e5a487ff9d"
+    },
+    {
+      "file": "test/translation-responsiveness.js",
+      "sha256": "62fbaf5abfd962eaecc2280dfcb8870405cefdb45ac98602d3e55b0ddb2062ad"
+    },
+    {
+      "file": "test/translation-ui.js",
+      "sha256": "41379de908852b5c938fdeec729b0cd337abdf732ee74bfde8a615ad582efdaa"
     },
     {
       "file": "test/verify.js",
@@ -319,11 +339,11 @@
     },
     {
       "file": "server.js",
-      "sha256": "e33b5737eb5b2b92c8ed5c8262c90bc08a4db2d3b5745867d5853f76f6eda7f1"
+      "sha256": "518646e4bfa829d0edf19e8585fcc3742eacf84f5d9b226a30f34608745c5efe"
     },
     {
       "file": "package.json",
-      "sha256": "0a4ad1a2c63b968e06c48c46da8ad741c83748eda04fb14b77ac4107f92f6b38"
+      "sha256": "3695f72af67bca65d62535ebb352cd03220f31072801c2dd2fe31d9eb012235e"
     },
     {
       "file": "package-lock.json",
@@ -343,7 +363,7 @@
     },
     {
       "file": "README.md",
-      "sha256": "eaa433faba2c7472c2784d1eb38b3945bf51e785f4e50811d6c4996aedb3ab97"
+      "sha256": "11eeb49006d6131aad4b7c3f5e6a43610ceac8cb03bd95afda68c4e7c4ea261e"
     },
     {
       "file": "LICENSE",
@@ -375,7 +395,7 @@
     },
     {
       "file": "docs/验证记录.md",
-      "sha256": "bf5ab29b31214d8b6be590f26eaf69d07a12dcb3580750dbc8da81e2023679f2"
+      "sha256": "698095ecec449828d5438ed198413009154ede9856315ab9af01791907aad3f0"
     },
     {
       "file": "catalogs/seed-reference-journals.json",

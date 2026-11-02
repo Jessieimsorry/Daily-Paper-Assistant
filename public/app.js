@@ -1263,9 +1263,11 @@ function discoveryCardHtml(it) {
    ================================================================== */
 
 async function viewQualified() {
+  const requestedRoute = location.hash;
   const main = $('#main');
   main.innerHTML = '<div class="loading">正在读取期刊条件合格精选…</div>';
   const d = await api('/api/desk/qualified?pageSize=30');
+  if (location.hash !== requestedRoute) return;
   if (!d.ok) { main.innerHTML = `<div class="banner danger">${esc(d.error || '')}</div>`; return; }
 
   main.innerHTML = `
@@ -1345,9 +1347,11 @@ function qualifiedCardHtml(it) {
    ================================================================== */
 
 async function viewJudgments() {
+  const requestedRoute = location.hash;
   const main = $('#main');
   main.innerHTML = '<div class="loading">正在读取你的阅读判断…</div>';
   const d = await api('/api/judgments');
+  if (location.hash !== requestedRoute) return;
   if (!d.ok) { main.innerHTML = `<div class="banner danger">${esc(d.error || '')}</div>`; return; }
 
   main.innerHTML = `
@@ -1418,9 +1422,11 @@ async function setJudgment(paperId, decision, btn, reloadView) {
 /* ============================== 视图：AI 简报 ============================== */
 
 async function viewBrief() {
+  const requestedRoute = location.hash;
   const main = $('#main');
   main.innerHTML = '<div class="loading">正在读取今日简报…</div>';
   const d = await api('/api/brief');
+  if (location.hash !== requestedRoute) return;
 
   if (!d.ok) { main.innerHTML = `<div class="banner danger">读取失败：${esc(d.error || '')}</div>`; return; }
   if (d.empty) {
@@ -1921,6 +1927,7 @@ function candidateListHtml(list, kind) {
 /* ============================== 视图：论文详情 ============================== */
 
 async function viewPaper(id, opts) {
+  const requestedRoute = location.hash;
   const keepInterpBox = Boolean(opts && opts.keepInterpBox);
   // 先留住「本次解读结果」的数据（重绘后要重新渲染），不搬 DOM
   const savedInterpResult = keepInterpBox ? (state.lastInterpResult || null) : null;
@@ -1928,6 +1935,7 @@ async function viewPaper(id, opts) {
   const main = $('#main');
   main.innerHTML = '<div class="loading">正在读取论文详情…</div>';
   const [d, jr] = await Promise.all([api('/api/papers/' + id), api('/api/judgments/' + id)]);
+  if (location.hash !== requestedRoute) return;
   if (!d.ok) { main.innerHTML = `<div class="banner danger">${esc(d.error)}</div>`; return; }
   const p = d.paper;
   const li = d.languageInfo || null;   // 语种判定信息（来源 + 依据 + 人工纠正入口）
@@ -2109,6 +2117,7 @@ async function viewPaper(id, opts) {
   // 正文与引用编号必须在容器进入 DOM 之后再渲染
   hydrateInterpretations($('#interpHistory'));
   await refreshFoot();
+  if (location.hash !== requestedRoute) return;
 
   // 「重新解读 / 删除」后不整页抹掉用户正在看的「本次解读结果」：
   // 整页重绘会连 #interpBox 一起清空，用户刚生成的结果就没了。
@@ -2299,34 +2308,41 @@ function renderVocabulary(v, p) {
 
 async function translateField(paperId, field, force, btn) {
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner dark"></span>翻译中…'; }
-  const r = await api('/api/translate/' + paperId, { method: 'POST', body: { field, force } });
-  if (btn) { btn.disabled = false; btn.textContent = force ? '重新翻译' : '翻译'; }
-  if (!r.ok) {
-    if (r.configured === false) { toast('未配置 AI 密钥，已跳转到设置页', true); go('settings'); return; }
-    toast(r.error || '翻译失败，原文已保留', true);
-  } else {
-    toast(r.cached ? '已使用保存的译文' : '翻译完成');
-    if (r.numberCheck && !r.numberCheck.ok) toast(r.numberCheck.note, true);
+  try {
+    const r = await api('/api/translate/' + paperId, { method: 'POST', body: { field, force } });
+    if (!r.ok) toast(r.error || '翻译失败，原文已保留', true);
+    else toast(r.cached ? '已使用保存的译文' : '翻译完成');
+    await reloadTranslations(paperId);
+  } catch (e) {
+    toast(e.message || '翻译请求失败，可重试', true);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = force ? '重新翻译' : '翻译'; }
   }
-  await reloadTranslations(paperId);
 }
 
 async function translateAll(paperId, force, btn) {
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner dark"></span>翻译中（篇名/关键词/摘要）…'; }
-  const r = await api('/api/translate/' + paperId, { method: 'POST', body: { all: true, force } });
-  if (btn) { btn.disabled = false; btn.textContent = force ? '全部重新翻译' : '一键翻译（篇名 / 关键词 / 摘要）'; }
-  if (!r.ok && r.errors && r.errors.length) {
-    const first = r.errors[0];
-    toast(`部分字段未能翻译：${first.field} — ${first.error}`, true);
-  } else if (r.ok) {
-    toast(force ? '已全部重新翻译' : '翻译完成');
+  const errors = [];
+  const labels = { title: '篇名', keywords: '关键词', abstract: '摘要' };
+  const fields = Object.keys(labels).filter(f => state.translations?.fields?.[f]?.available !== false);
+  try {
+    // 字段独立完成并刷新：篇名无需等待耗时更长的摘要。
+    await Promise.all(fields.map(async field => {
+      try {
+        const r = await api('/api/translate/' + paperId, { method: 'POST', body: { field, force } });
+        if (!r.ok) errors.push(labels[field] + '：' + (r.error || '翻译失败'));
+        await reloadTranslations(paperId);
+      } catch (e) { errors.push(labels[field] + '：' + e.message); }
+    }));
+    toast(errors.length ? '部分字段未能翻译：' + errors.join('；') : '翻译完成', errors.length > 0);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = force ? '全部重新翻译' : '一键翻译（篇名 / 关键词 / 摘要）'; }
   }
-  await reloadTranslations(paperId);
 }
 
 async function reloadTranslations(paperId) {
   const d = await api('/api/translate/' + paperId);
-  if (!d.ok) return;
+  if (!d.ok || state.view !== 'paper' || state.currentPaper?.id !== paperId) return;
   state.translations = d;
   if ($('#transBox') && state.currentPaper) {
     $('#transBox').innerHTML = renderTranslations(state.currentPaper, state.vocabulary, d);
@@ -2692,9 +2708,11 @@ async function verifyJournal(journalId, paperId) {
 /* ============================== 视图：收藏 ============================== */
 
 async function viewLibrary() {
+  const requestedRoute = location.hash;
   const main = $('#main');
   main.innerHTML = '<div class="loading">正在读取收藏…</div>';
   const [lib, topics] = await Promise.all([api('/api/library'), api('/api/topics')]);
+  if (location.hash !== requestedRoute) return;
   if (!lib.ok) { main.innerHTML = `<div class="banner danger">${esc(lib.error)}</div>`; return; }
   state.topics = topics.topics || [];
   const s = lib.stats;
@@ -2826,8 +2844,10 @@ function clearLibFilters() {
 /* ============================== 视图：主题与检索词 ============================== */
 
 async function viewTopics() {
+  const requestedRoute = location.hash;
   const main = $('#main');
   const r = await api('/api/topics');
+  if (location.hash !== requestedRoute) return;
   state.topics = r.topics || [];
   main.innerHTML = `
     <div class="page-head">
@@ -2931,9 +2951,11 @@ async function deleteTopic(id) {
 /* ============================== 视图：期刊目录 ============================== */
 
 async function viewJournals() {
+  const requestedRoute = location.hash;
   const main = $('#main');
   main.innerHTML = '<div class="loading">正在读取期刊数据…</div>';
   const [cat, list] = await Promise.all([api('/api/journals/catalogs'), api('/api/journals')]);
+  if (location.hash !== requestedRoute) return;
   const c = cat.catalogs || {};
 
   main.innerHTML = `
@@ -3335,11 +3357,13 @@ function journalLikeTable(list) {
 /* ============================== 视图：设置 ============================== */
 
 async function viewSettings() {
+  const requestedRoute = location.hash;
   const main = $('#main');
   main.innerHTML = '<div class="loading">正在读取设置…</div>';
   const [cfg, health, sch, srcStats] = await Promise.all([
     api('/api/settings'), api('/api/sources/health'), api('/api/health'), api('/api/ingest/stats?days=30'),
   ]);
+  if (location.hash !== requestedRoute) return;
   const c = cfg.config;
   state.config = c;
 
@@ -3868,6 +3892,7 @@ async function render() {
       else await viewDiscovery(true);
     }
   } catch (e) {
+    if ((location.hash || '#/discovery') !== hash) return;
     $('#main').innerHTML = `<div class="banner danger"><strong>页面渲染出错</strong><br>${esc(e.message)}<pre class="small">${esc(e.stack || '')}</pre></div>`;
   }
   refreshFoot();

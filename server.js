@@ -733,7 +733,7 @@ route('POST', '/api/reader/resume', async (req,url,m,raw) => {
 
 route('GET', '/api/desk', async () => desk.deskOverview());
 
-route('GET', '/api/desk/discovery', async (req, url) => desk.listDiscovery({
+route('GET', '/api/desk/discovery', async (req, url) => desk.listDiscoveryAsync({
   page: url.searchParams.get('page'),
   pageSize: url.searchParams.get('pageSize'),
   journalFilter: url.searchParams.get('journalFilter'),
