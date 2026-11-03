@@ -24,6 +24,25 @@ function releaseId(root) {
   CODE.forEach(walk);
   return hash.digest("hex");
 }
+function dependencyId(root) {
+  const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json")));
+  const lock = JSON.parse(
+    fs.readFileSync(path.join(root, "package-lock.json")),
+  );
+  delete lock.version;
+  if (lock.packages?.[""]) delete lock.packages[""].version;
+  return crypto
+    .createHash("sha256")
+    .update(
+      JSON.stringify([
+        pkg.dependencies,
+        pkg.optionalDependencies,
+        pkg.overrides,
+        lock,
+      ]),
+    )
+    .digest("hex");
+}
 function copyCode(from, to) {
   fs.mkdirSync(to, { recursive: true, mode: 0o700 });
   for (const name of CODE)
@@ -35,6 +54,26 @@ function copyCode(from, to) {
 function hasData(dir) {
   return (
     fs.existsSync(dir) && fs.readdirSync(dir).some((n) => !n.startsWith("."))
+  );
+}
+function legacyFingerprint(dir) {
+  const h = crypto.createHash("sha256");
+  for (const name of [
+    "litdesk.db",
+    "litdesk.db-wal",
+    "settings.json",
+    "secrets.json",
+  ]) {
+    const file = path.join(dir, name);
+    if (fs.existsSync(file)) h.update(name).update(fs.readFileSync(file));
+  }
+  return h.digest("hex");
+}
+function markMigration(data, legacy, fingerprint) {
+  fs.writeFileSync(
+    path.join(data, ".migration-source.json"),
+    JSON.stringify({ from: fs.realpathSync(legacy), fingerprint }),
+    { mode: 0o600 },
   );
 }
 function migrationSource(root, data, from) {
@@ -49,10 +88,22 @@ function migrationSource(root, data, from) {
     if (from) throw Error("旧数据目录中没有 litdesk.db");
     return null;
   }
-  if (hasData(data))
+  if (hasData(data)) {
+    let marker;
+    try {
+      marker = JSON.parse(
+        fs.readFileSync(path.join(data, ".migration-source.json")),
+      );
+    } catch {}
+    if (
+      marker?.from === fs.realpathSync(candidate) &&
+      marker.fingerprint === legacyFingerprint(candidate)
+    )
+      return null;
     throw Error(
       "发现两份数据，已停止自动迁移。请保留两个目录，通过任务与数据合并导入，不会覆盖已有资料。",
     );
+  }
   return candidate;
 }
 function assertSeparate(a, b) {
@@ -173,6 +224,7 @@ function prepare({ root, runtime, data, from }) {
     runtime,
     data,
     legacy,
+    legacyFingerprint: legacy ? legacyFingerprint(legacy) : null,
     at: new Date().toISOString(),
   };
   try {
@@ -180,6 +232,7 @@ function prepare({ root, runtime, data, from }) {
       fs.mkdirSync(data, { recursive: true, mode: 0o700 });
       fs.cpSync(path.join(backup, "data"), data, { recursive: true });
       rebaseUploads(data, legacy);
+      markMigration(data, legacy, record.legacyFingerprint);
     }
     if (fs.existsSync(runtime)) fs.renameSync(runtime, old);
     fs.renameSync(stage, runtime);
@@ -207,6 +260,10 @@ function rollback(r) {
   const failed = r.runtime + ".failed-" + Date.now();
   fs.renameSync(r.runtime, failed);
   if (fs.existsSync(r.old)) fs.renameSync(r.old, r.runtime);
+  if (r.oldDependencies && fs.existsSync(r.oldDependencies)) {
+    fs.mkdirSync(r.runtime, { recursive: true });
+    fs.renameSync(r.oldDependencies, path.join(r.runtime, "node_modules"));
+  }
   if (
     fs.existsSync(path.join(failed, "node_modules")) &&
     !fs.existsSync(path.join(r.runtime, "node_modules"))
@@ -221,7 +278,10 @@ function rollback(r) {
     if (fs.existsSync(r.data))
       fs.renameSync(r.data, r.data + ".failed-" + Date.now());
     fs.cpSync(path.join(r.backup, "data"), r.data, { recursive: true });
-    if (r.legacy) rebaseUploads(r.data, r.legacy);
+    if (r.legacy) {
+      rebaseUploads(r.data, r.legacy);
+      markMigration(r.data, r.legacy, r.legacyFingerprint);
+    }
   }
 }
 module.exports = {
@@ -231,4 +291,5 @@ module.exports = {
   migrationSource,
   copyCode,
   validateVersion,
+  dependencyId,
 };

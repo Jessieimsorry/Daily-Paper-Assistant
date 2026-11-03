@@ -186,8 +186,21 @@ async function launch() {
       console.log("升级前备份已保存：" + record.backup);
     }
     fs.mkdirSync(data, { recursive: true, mode: 0o700 });
+    const depsChanged =
+      record?.oldVersion &&
+      (!fs.existsSync(path.join(record.old, "package-lock.json")) ||
+        u.dependencyId(record.old) !== u.dependencyId(runtime));
+    if (depsChanged && fs.existsSync(path.join(runtime, "node_modules"))) {
+      record.oldDependencies = path.join(record.backup, "node_modules");
+      fs.renameSync(path.join(runtime, "node_modules"), record.oldDependencies);
+      fs.writeFileSync(
+        path.join(record.backup, "upgrade.json"),
+        JSON.stringify(record, null, 2),
+        { mode: 0o600 },
+      );
+    }
     if (!fs.existsSync(path.join(runtime, "node_modules", "exceljs"))) {
-      if (fs.existsSync(path.join(root, "node_modules")))
+      if (!depsChanged && fs.existsSync(path.join(root, "node_modules")))
         fs.cpSync(
           path.join(root, "node_modules"),
           path.join(runtime, "node_modules"),

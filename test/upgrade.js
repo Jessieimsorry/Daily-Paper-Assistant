@@ -36,6 +36,11 @@ test("old local data migrates once; backup and rollback preserve database, keys 
     target = path.join(dir, "data");
   data(path.join(root, "data"));
   const r = u.prepare({ root, runtime, data: target });
+  assert.equal(
+    u.migrationSource(root, target),
+    null,
+    "a completed migration is reused on the next launch",
+  );
   const { DatabaseSync } = require("node:sqlite");
   const moved = new DatabaseSync(path.join(target, "litdesk.db"), {
     readOnly: true,
@@ -59,6 +64,10 @@ test("old local data migrates once; backup and rollback preserve database, keys 
     "2.1.0",
   );
   fs.writeFileSync(path.join(target, "secrets.json"), "changed");
+  const original = new DatabaseSync(path.join(root, "data", "litdesk.db"));
+  original.exec("UPDATE favorite SET title='旧版后来新增的修改'");
+  original.close();
+  assert.throws(() => u.migrationSource(root, target), /两份数据/);
   u.rollback(r);
   assert.equal(
     fs.readFileSync(path.join(target, "secrets.json"), "utf8"),
@@ -83,5 +92,52 @@ test("an old package cannot silently downgrade an installed version", () => {
   assert.throws(
     () => u.prepare({ root, runtime, data: path.join(dir, "unused") }),
     /降级/,
+  );
+});
+test("dependency changes are detected without reinstalling for a version number alone", () => {
+  const a = app("deps-old", "2.0.0"),
+    b = app("deps-new", "2.1.0");
+  for (const [root, version] of [
+    [a, "2.0.0"],
+    [b, "2.1.0"],
+  ])
+    fs.writeFileSync(
+      path.join(root, "package-lock.json"),
+      JSON.stringify({
+        version,
+        lockfileVersion: 3,
+        packages: {
+          "": { version },
+          "node_modules/fixture": { version: "1.0.0" },
+        },
+      }),
+    );
+  assert.equal(u.dependencyId(a), u.dependencyId(b));
+  const lock = JSON.parse(fs.readFileSync(path.join(b, "package-lock.json")));
+  lock.packages["node_modules/fixture"].version = "2.0.0";
+  fs.writeFileSync(path.join(b, "package-lock.json"), JSON.stringify(lock));
+  assert.notEqual(u.dependencyId(a), u.dependencyId(b));
+});
+test("rollback restores old dependencies even after a failed dependency installation", () => {
+  const root = app("deps-package", "2.1.0"),
+    runtime = app("deps-runtime", "2.0.0"),
+    target = path.join(dir, "deps-data");
+  fs.mkdirSync(path.join(runtime, "node_modules"));
+  fs.writeFileSync(
+    path.join(runtime, "node_modules", "fixture.txt"),
+    "old dependency",
+  );
+  const r = u.prepare({ root, runtime, data: target });
+  r.oldDependencies = path.join(r.backup, "node_modules");
+  fs.renameSync(path.join(runtime, "node_modules"), r.oldDependencies);
+  fs.mkdirSync(path.join(runtime, "node_modules"));
+  fs.writeFileSync(
+    path.join(runtime, "node_modules", "fixture.txt"),
+    "incomplete new dependency",
+  );
+  u.rollback(r);
+  assert.equal(
+    fs.readFileSync(path.join(runtime, "node_modules", "fixture.txt"), "utf8"),
+    "old dependency",
   );
 });
