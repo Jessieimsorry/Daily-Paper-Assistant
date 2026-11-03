@@ -219,7 +219,7 @@ route('GET', '/api/health', async () => {
     frontierHealth = { error: '前沿状态读取失败：' + e.message };
   }
   return {
-    ok: true, app: '文献阅读工作台', version: require('./package.json').version,
+    ok: true, app: '文献阅读工作台', releaseId: process.env.LITDESK_RELEASE_ID || null, pid: process.pid, version: require('./package.json').version,
     time: new Date().toISOString(),
     node: process.version,
     dbFile: store.DB_FILE,
@@ -1018,6 +1018,15 @@ function startBackgroundUpdate({ reason = 'manual', force = false, skipBrief = f
   })();
   return BRIEF_JOB;
 }
+
+route('POST','/api/app/stop-for-upgrade',async(req)=>{
+  const expected=process.env.LITDESK_CONTROL_TOKEN;
+  if(!expected||req.headers['x-litdesk-control']!==expected)return {ok:false,error:'升级授权不匹配，请使用新版启动器'};
+  const busy=scheduler.status().running||BRIEF_JOB.running||require('./lib/tasks').list().some(j=>['queued','running'].includes(j.status));
+  if(busy)return {ok:false,error:'采集或模型任务仍在运行，请完成或取消后再升级'};
+  setTimeout(()=>{server.close(()=>{store.db.close();process.exit(0);});server.closeIdleConnections();},100);
+  return {ok:true};
+});
 
 require('./lib/api-v2')({route,readJson,revalidate:revalidateAllPapers});
 

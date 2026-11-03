@@ -26,4 +26,7 @@ release/
 本轮升级与回退.md
 docs/开发历史.md
 
+dist/
+/发布清单.json
+
 !catalogs/seed-reference-journals.json

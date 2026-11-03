@@ -522,7 +522,7 @@ async function refreshFoot() {
   state.health = h;
   const s = h.stats || {};
   $('#footStats').innerHTML =
-    `论文 <b>${s.papers || 0}</b> 篇 · 合格 <b>${s.eligiblePapers || 0}</b> · 待核验 <b>${s.pendingPapers || 0}</b><br>
+    `<span class="tiny">版本 ${esc(h.version || '未知')}</span><br>论文 <b>${s.papers || 0}</b> 篇 · 合格 <b>${s.eligiblePapers || 0}</b> · 待核验 <b>${s.pendingPapers || 0}</b><br>
      收藏 <b>${s.starred || 0}</b> · 解读 <b>${s.interpretations || 0}</b><br>
      <span class="tiny">下次更新 ${esc(fmtBeijing(h.scheduler?.nextAt))}</span>`;
 }

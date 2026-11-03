@@ -1,1 +1,22 @@
-{"name":"daily-paper-assistant","version":"2.0.0","description":"可配置、多语的本地科研文献阅读工作台","license":"MIT","private":true,"engines":{"node":">=22"},"scripts":{"start":"node scripts/launch.js","test":"node test/configurable.js && node --test test/navigation-race.js test/translation-ui.js test/translation-responsiveness.js test/stream-translation-ui.js && node test/discovery-cache.js","release":"node scripts/release.js"},"dependencies":{"exceljs":"4.4.0"},"overrides":{"uuid":"11.1.1"}}
+{
+  "name": "daily-paper-assistant",
+  "version": "2.1.0",
+  "description": "可配置、多语的本地科研文献阅读工作台",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node scripts/launch.js",
+    "test": "node test/configurable.js && node --test test/navigation-race.js test/translation-ui.js test/translation-responsiveness.js test/stream-translation-ui.js && node test/discovery-cache.js && node --test test/upgrade.js",
+    "release": "node scripts/release.js",
+    "package": "node scripts/package.js"
+  },
+  "dependencies": {
+    "exceljs": "4.4.0"
+  },
+  "overrides": {
+    "uuid": "11.1.1"
+  }
+}

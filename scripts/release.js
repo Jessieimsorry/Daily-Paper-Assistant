@@ -30,6 +30,10 @@ const files = [
   "docs/隐私与发布说明.md",
   "docs/第三方依赖.md",
   "docs/验证记录.md",
+  "docs/使用指南.md",
+  "docs/升级指南.md",
+  "docs/开发指南.md",
+  "CHANGELOG.md",
 ];
 const blocked =
   /(^|\/)(node_modules|data|data-[^/.]*|release|\.git|期刊目录|验收截图)(\/|$)|(?:secrets|settings)\.json$|\.(?:db|sqlite|log|zip)$/i;
