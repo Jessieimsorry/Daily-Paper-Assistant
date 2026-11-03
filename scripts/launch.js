@@ -28,23 +28,26 @@ async function probe(port) {
 }
 function open(url) {
   if (process.env.DPA_NO_BROWSER === "1") return;
+  let browser;
   if (process.platform === "win32")
-    spawn("cmd.exe", ["/d", "/c", "start", "", url], {
+    browser = spawn("cmd.exe", ["/d", "/c", "start", "", url], {
       detached: true,
       stdio: "ignore",
-    }).unref();
+    });
   else
-    spawn(process.platform === "darwin" ? "open" : "xdg-open", [url], {
+    browser = spawn(process.platform === "darwin" ? "open" : "xdg-open", [url], {
       detached: true,
       stdio: "ignore",
-    }).unref();
+    });
+  browser.on("error", () => console.log("请在浏览器手动打开：" + url));
+  browser.unref();
 }
 async function launch() {
   try {
     require("node:sqlite");
   } catch {
     throw Error(
-      "请安装包含 node:sqlite 的 Node.js 22 或更新版本：https://nodejs.org/",
+      "请安装包含 node:sqlite 的 Node.js 24 LTS（推荐）或支持 node:sqlite 的版本：https://nodejs.org/",
     );
   }
   const port = Number(process.env.LITDESK_PORT || 8787);
@@ -73,7 +76,7 @@ async function launch() {
     "package.json",
     "package-lock.json",
   ])
-    if (fs.existsSync(path.join(root, name)))
+    if (fs.realpathSync(root) !== fs.realpathSync(runtime) && fs.existsSync(path.join(root, name)))
       fs.cpSync(path.join(root, name), path.join(runtime, name), {
         recursive: true,
       });
@@ -98,6 +101,8 @@ async function launch() {
     env: { ...process.env, LITDESK_DATA_DIR: data, LITDESK_PORT: String(port) },
     stdio: "inherit",
   });
+  for (const signal of ["SIGINT", "SIGTERM"])
+    process.on(signal, () => child.kill());
   child.on("error", (e) => console.error("启动失败：" + e.message));
   let ready = false;
   for (let i = 0; i < 80; i++) {
@@ -114,8 +119,6 @@ async function launch() {
   }
   console.log("工作台已启动：" + url);
   open(url);
-  for (const signal of ["SIGINT", "SIGTERM"])
-    process.on(signal, () => child.kill());
   child.on("exit", (code) => (process.exitCode = code || 0));
 }
 if (require.main === module)

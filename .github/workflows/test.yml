@@ -15,3 +15,12 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm test
       - run: node test/launch-smoke.js
+      - run: node test/launcher-integration.js
+      - name: Windows browser layout checks
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          npm install --prefix "$env:RUNNER_TEMP/dpa-ui" --no-package-lock --ignore-scripts playwright@1.56.1
+          node "$env:RUNNER_TEMP/dpa-ui/node_modules/playwright/cli.js" install chromium
+          $env:NODE_PATH = "$env:RUNNER_TEMP/dpa-ui/node_modules"
+          node test/windows-layout.js

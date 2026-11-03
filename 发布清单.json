@@ -1,6 +1,6 @@
 {
   "project": "Daily-Paper-Assistant",
-  "at": "2026-11-02T15:42:54.364Z",
+  "at": "2026-11-03T00:19:13.806Z",
   "privacy": {
     "personalData": false,
     "secrets": false,
@@ -171,15 +171,15 @@
     },
     {
       "file": "public/style.css",
-      "sha256": "31cd991b23cf176030ca720b88d21f87df4e34e74b52ca8c63a9f0458da0806f"
+      "sha256": "af534c7a4d1fec822aae51cd8f32d04c455e6f5dbdd2445f0a1f7e74a7d9c199"
     },
     {
       "file": "scripts/launch.js",
-      "sha256": "16db0fae11cd586abc991d17af0e382902d11428b207496eec650683ef6cd276"
+      "sha256": "444b74986758aa9749f927e5c5a99e3009a40c90ff96d0a445630f39b3658b94"
     },
     {
       "file": "scripts/release.js",
-      "sha256": "5236e746681ed3e815c3f73e9a7190a8087e607ad4e1ed62375c4a05343396e5"
+      "sha256": "58e16df6a2fae9171b76ee23e77e0629b748e560b954b122637d00b2241ea8a8"
     },
     {
       "file": "scripts/sync-runtime.js",
@@ -246,6 +246,10 @@
       "sha256": "3c83498dfe14f3030bf54185c2072725f4df9127e31832bcb0e9a2c89c428dc0"
     },
     {
+      "file": "test/launcher-integration.js",
+      "sha256": "d231545fd87b3401a2aa8866a7612c8af5ac6bb364920ce59d92e19948654ea1"
+    },
+    {
       "file": "test/navigation-race.js",
       "sha256": "b4994c3ba746246d0c5cf9b5b76b4e03c4f86991b298e54f9c3a8a04503d02e3"
     },
@@ -302,6 +306,10 @@
       "sha256": "e3eb330925b1f3481290539a5ff72c43b2f313c88d72510597d6798ce383ff0b"
     },
     {
+      "file": "test/windows-layout.js",
+      "sha256": "e9cc226ed23cdb9f973c7d69c85f5f4596a5763d12618057a72518c6f79588f3"
+    },
+    {
       "file": "catalogs/templates/blacklist.csv",
       "sha256": "8e500ad8286e4337d2cfa9044acfe5d19d37789a9b297514bd9ab9afb0ff2a19"
     },
@@ -331,7 +339,7 @@
     },
     {
       "file": ".github/workflows/test.yml",
-      "sha256": "eb30c07049b8493fae92429b6ed954345dd5f7afb4cdfb3e53d7c5a32db68952"
+      "sha256": "f2b8e925ae85c55f0c887cf5d0f192e99db96d67575bc5eb7996eea5772c7e10"
     },
     {
       "file": "docs/images/home.jpg",
@@ -359,11 +367,11 @@
     },
     {
       "file": "启动工作台.cmd",
-      "sha256": "98d246396d94aa5a66cd5ca25c00eb401116b294fbdfe69368f1cc6babc36144"
+      "sha256": "71933f7dd35b4bd905ec9b2f21a0f6b938162fdab322a973629722517854b568"
     },
     {
       "file": "README.md",
-      "sha256": "11eeb49006d6131aad4b7c3f5e6a43610ceac8cb03bd95afda68c4e7c4ea261e"
+      "sha256": "3be7358fb570ebbb1a382ff7849579afdd548c1db3d86663acdd9438b8a3c746"
     },
     {
       "file": "LICENSE",
@@ -376,6 +384,10 @@
     {
       "file": ".gitignore",
       "sha256": "54db66fa80a9acc0b652f290b961cdaba409bc4c09b17a50060f2dfb63aa65b1"
+    },
+    {
+      "file": ".gitattributes",
+      "sha256": "d1572c8ccffb21d3745d4b51c09bd8aa8f8fbfc90e7061eaf348326f88acbc8f"
     },
     {
       "file": ".env.example",
@@ -395,7 +407,7 @@
     },
     {
       "file": "docs/验证记录.md",
-      "sha256": "698095ecec449828d5438ed198413009154ede9856315ab9af01791907aad3f0"
+      "sha256": "cb8630e2a570f2c21e58322a4a6eddfbc07927d840d4fb20a4a690755a2b56a9"
     },
     {
       "file": "catalogs/seed-reference-journals.json",

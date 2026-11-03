@@ -24,6 +24,7 @@ const files = [
   "LICENSE",
   "CONTRIBUTING.md",
   ".gitignore",
+  ".gitattributes",
   ".env.example",
   "catalogs/seed-topics.json",
   "docs/隐私与发布说明.md",

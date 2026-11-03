@@ -707,3 +707,14 @@ body[data-reading-theme="dark"] .category-tile{background:var(--panel-2);}
 .card{margin-bottom:16px;}
 .modal{max-height:90dvh;overflow:auto;}
 @media(max-width:900px){body[data-translation-layout="parallel"] .abs-full,body[data-translation-layout="parallel"] .abs-preview{display:flex;flex-direction:column;}body[data-translation-layout="parallel"] .abs-col+.abs-col{border-left:0;border-top:1px solid var(--line-2);}}
+/* Edge / Windows 高缩放：长 DOI、译文及原生控件不得撑破正文。 */
+button,input,select,textarea{font-family:inherit;}
+.trans-side>div,.meta-grid>div,.abs-col,.workspace .main{min-width:0;}
+.brief-title,.brief-title-zh,.trans-body,.trans-side,.brief-meta,.card-links,.meta-grid{overflow-wrap:anywhere;}
+input,select,textarea{max-width:100%;}
+.sidebar{scrollbar-gutter:stable;}
+@media(forced-colors:active){
+ .btn,.category-tile,.drawer-toggle{border:1px solid ButtonText;}
+ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid Highlight;outline-offset:2px;}
+ .category-tile.selected,.nav-item.active{outline:2px solid Highlight;outline-offset:-3px;}
+}
