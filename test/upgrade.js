@@ -21,6 +21,10 @@ function data(p) {
   db.exec(
     "CREATE TABLE favorite(title); INSERT INTO favorite VALUES('我的收藏')",
   );
+  db.exec("CREATE TABLE fulltexts(stored_path TEXT)");
+  db.prepare("INSERT INTO fulltexts VALUES(?)").run(
+    path.join(p, "uploads", "paper.pdf"),
+  );
   db.close();
   fs.writeFileSync(path.join(p, "secrets.json"), "private-fixture");
   fs.mkdirSync(path.join(p, "uploads"));
@@ -32,6 +36,19 @@ test("old local data migrates once; backup and rollback preserve database, keys 
     target = path.join(dir, "data");
   data(path.join(root, "data"));
   const r = u.prepare({ root, runtime, data: target });
+  const { DatabaseSync } = require("node:sqlite");
+  const moved = new DatabaseSync(path.join(target, "litdesk.db"), {
+    readOnly: true,
+  });
+  try {
+    assert.equal(
+      moved.prepare("SELECT stored_path FROM fulltexts").get().stored_path,
+      path.join(target, "uploads", "paper.pdf"),
+    );
+  } finally {
+    moved.close();
+  }
+
   assert.equal(
     fs.readFileSync(path.join(target, "secrets.json"), "utf8"),
     "private-fixture",

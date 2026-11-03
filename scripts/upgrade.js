@@ -81,6 +81,55 @@ function validateVersion(root, runtime) {
   }
   return { version, oldVersion };
 }
+function rebaseUploads(data, from) {
+  const file = path.join(data, "litdesk.db");
+  if (!fs.existsSync(file)) return;
+  const { DatabaseSync } = require("node:sqlite");
+  const db = new DatabaseSync(file);
+  try {
+    if (
+      !db
+        .prepare("PRAGMA table_info(fulltexts)")
+        .all()
+        .some((c) => c.name === "stored_path")
+    )
+      return;
+    const roots = [path.resolve(from), fs.realpathSync(from)];
+    db.exec("BEGIN");
+    try {
+      for (const row of db
+        .prepare(
+          "SELECT rowid AS id, stored_path FROM fulltexts WHERE stored_path IS NOT NULL",
+        )
+        .all()) {
+        for (const root of roots) {
+          const rel = path.relative(
+            path.join(root, "uploads"),
+            path.resolve(row.stored_path),
+          );
+          if (
+            rel &&
+            !rel.startsWith(".." + path.sep) &&
+            rel !== ".." &&
+            !path.isAbsolute(rel)
+          ) {
+            db.prepare("UPDATE fulltexts SET stored_path=? WHERE rowid=?").run(
+              path.join(data, "uploads", rel),
+              row.id,
+            );
+            break;
+          }
+        }
+      }
+      db.exec("COMMIT");
+    } catch (e) {
+      db.exec("ROLLBACK");
+      throw e;
+    }
+  } finally {
+    db.close();
+  }
+}
 function prepare({ root, runtime, data, from }) {
   assertSeparate(runtime, data);
   assertSeparate(data, runtime);
@@ -130,6 +179,7 @@ function prepare({ root, runtime, data, from }) {
     if (legacy) {
       fs.mkdirSync(data, { recursive: true, mode: 0o700 });
       fs.cpSync(path.join(backup, "data"), data, { recursive: true });
+      rebaseUploads(data, legacy);
     }
     if (fs.existsSync(runtime)) fs.renameSync(runtime, old);
     fs.renameSync(stage, runtime);
@@ -171,6 +221,7 @@ function rollback(r) {
     if (fs.existsSync(r.data))
       fs.renameSync(r.data, r.data + ".failed-" + Date.now());
     fs.cpSync(path.join(r.backup, "data"), r.data, { recursive: true });
+    if (r.legacy) rebaseUploads(r.data, r.legacy);
   }
 }
 module.exports = {
